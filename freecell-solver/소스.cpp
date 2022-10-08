@@ -40,6 +40,20 @@ int board[10][20] = {
 	{c(9),s(13),h(5),d(7),s(8),h(8)}
 };
 
+struct node {
+	int board[10][20] = {NULL};
+	int depth; // ÀÌµ¿ È½¼ö
+	int hscore;// ÈÞ¸®½ºÆ½ ½ºÄÚ¾î
+	int fscore;// ÃÑ ½ºÄÚ¾î = ÀÌµ¿ È½¼ö + ÈÞ¸®½ºÆ½ ½ºÄÚ¾î
+	node* prev = NULL;
+	node* listnext = NULL;
+	node* samefend = NULL;
+};
+
+struct list {
+	node* head = NULL;
+}open;
+
 void check_board(int board[10][20]) {
 	int checker[53] = { 0 };
 	for (int i = 2; i < 10; i++) {
@@ -88,7 +102,36 @@ void print_board(int board[10][20]) {
 	}
 }
 
+int h_score(int board[10][20]) {
+
+
+
+	return 0;
+}
+
+node initnode(int board[10][20]) {
+	node init;
+	
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; board[i][j] != NULL; j++) {
+			int num = board[i][j];
+			init.board[i][j] = num;
+		}
+	}
+
+	init.depth = 0;
+	init.hscore = h_score(init.board);
+	init.fscore = 0;
+
+	return init;
+}
+
 void main() {
 	check_board(board);
 	print_board(board);
+
+	node a = initnode(board);
+
+	check_board(a.board);
+	print_board(a.board);
 }
