@@ -104,9 +104,11 @@ void print_board(int board[10][20]) {
 
 int h_score(int board[10][20]) {
 
+	int score = 0;
 
+	score = board[1][0] + board[1][1] - 13 + board[1][2] - 26 + board[1][3] - 39;
 
-	return 0;
+	return score;
 }
 
 node initnode(int board[10][20]) {
@@ -121,7 +123,7 @@ node initnode(int board[10][20]) {
 
 	init.depth = 0;
 	init.hscore = h_score(init.board);
-	init.fscore = 0;
+	init.fscore = init.depth-init.hscore;
 
 	return init;
 }
@@ -131,7 +133,9 @@ void main() {
 	print_board(board);
 
 	node a = initnode(board);
+	list open;
+	open.head = &a;
 
-	check_board(a.board);
-	print_board(a.board);
+	check_board(open.head->board);
+	print_board(open.head->board);
 }
