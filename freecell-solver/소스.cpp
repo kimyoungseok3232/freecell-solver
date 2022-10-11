@@ -81,24 +81,57 @@ void check_board(int board[10][20]) {
 	printf("\nevery card exist.\n");
 	printf("same card doesn't exist.\n\n");
 }
+void print_card(int num) {
+	
+	if (num == 0) {
+		printf("%5d", num);
+		return;
+	}
+	if ((num-1) / 13 == 0)
+		printf("¢¼");
+	else if ((num - 1) / 13 == 1)
+		printf("¢À");
+	else if ((num - 1) / 13 == 2)
+		printf("¢¾");
+	else
+		printf("¡ß");
 
+	if (num % 13 == 11)
+		printf(" J  ");
+	else if (num % 13 == 12)
+		printf(" Q  ");
+	else if (num % 13 == 0)
+		printf(" K  ");
+	else
+		printf("%2d  ", num % 13);
+
+}
 void print_board(int board[10][20]) {
-	for (int i = 2; i < 10; i++) {
-		int j = 0;
-		while (board[i][j] != NULL) {
 
-			if (board[i][j] <= 13)
-				printf("¢¼%2d", board[i][j]);
-			else if (board[i][j] <= 26)
-				printf("¢À%2d", board[i][j]-13);
-			else if (board[i][j] <= 39)
-				printf("¢¾%2d", board[i][j]-26);
-			else
-				printf("¡ß%2d", board[i][j]-39);
+	int count = 52-board[1][0]%13-board[1][1]%13-board[1][2]%13-board[1][3]%13;
 
-			j++;
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 4; j++) {
+			print_card(board[i][j]);
+		}
+		printf("    ");
+	}
+	printf("\n\n");
+	for (int j = 0; j < 20; j++) {
+		for (int i = 2; i < 10; i++) {
+
+			if (board[i][j] == NULL)
+				continue;
+			int num = board[i][j];
+
+			print_card(num);
+
+
+			count--;
 		}
 		printf("\n");
+		if (count == 0)
+			break;
 	}
 }
 
