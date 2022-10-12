@@ -151,6 +151,9 @@ int find_top(int board[10][20],int n) {
 			else if (temp < 27 && board[n][j]>26 && (temp + 1) % 13 == board[n][j] % 13) {
 				count++;
 			}
+			else if (temp > 26 && board[n][j]<27 && (temp + 1) % 13 == board[n][j] % 13) {
+				count++;
+			}
 			else
 				break;
 		}
