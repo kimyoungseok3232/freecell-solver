@@ -45,6 +45,9 @@ struct node {
 	int depth; // ÀÌµ¿ È½¼ö
 	int hscore;// ÈÞ¸®½ºÆ½ ½ºÄÚ¾î
 	int fscore;// ÃÑ ½ºÄÚ¾î = ÀÌµ¿ È½¼ö + ÈÞ¸®½ºÆ½ ½ºÄÚ¾î
+	int empty_freecell;
+	int empty_cell;
+	int last_move = 0;
 	node* prev = NULL;
 	node* listnext = NULL;
 	node* samefend = NULL;
@@ -106,13 +109,13 @@ void print_card(int num) {
 		printf("%2d  ", num % 13);
 
 }
-void print_board(int board[10][20]) {
+void print_board(node no) {
 
-	int count = 52-board[1][0]%13-board[1][1]%13-board[1][2]%13-board[1][3]%13;
+	int count = 52 - no.board[1][0] % 13 - no.board[1][1] % 13 - no.board[1][2] % 13 - no.board[1][3] % 13 + no.empty_freecell - 4;
 
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 4; j++) {
-			print_card(board[i][j]);
+			print_card(no.board[i][j]);
 		}
 		printf("    ");
 	}
@@ -120,9 +123,9 @@ void print_board(int board[10][20]) {
 	for (int j = 0; j < 20; j++) {
 		for (int i = 2; i < 10; i++) {
 
-			if (board[i][j] == NULL)
+			if (no.board[i][j] == NULL)
 				continue;
-			int num = board[i][j];
+			int num = no.board[i][j];
 
 			print_card(num);
 
@@ -134,7 +137,41 @@ void print_board(int board[10][20]) {
 			break;
 	}
 }
+int find_top(int board[10][20],int n) {
+	if (n < 2)
+		return NULL;
+	int temp = 0;
+	int count = 0;
+	for (int j = 19; j >= 0; j--) {
+		if (board[n][j] != NULL) {
+			if (temp == 0) {
+				temp = board[n][j];
+				count++;
+			}
+			else if (temp < 27 && board[n][j]>26 && (temp + 1) % 13 == board[n][j] % 13) {
+				count++;
+			}
+			else
+				break;
+		}
+	}
+	return count*100+temp;
+}
+void find_move(node no) {
+	int top[8][2];
 
+	for (int i = 0; i < 8; i++) {
+		int t = find_top(no.board, i + 2);
+		top[i][0] = t % 100;
+		top[i][1] = t / 100;
+		print_card(top[i][0]);
+		printf("%d ", top[i][1]);
+	}
+
+	for (int i = 0; i < 8; i++) {
+
+	}
+}
 int h_score(int board[10][20]) {
 
 	int score = 0;
@@ -153,22 +190,28 @@ node initnode(int board[10][20]) {
 			init.board[i][j] = num;
 		}
 	}
-
+	init.empty_freecell = 4;
+	init.empty_cell = 0;
 	init.depth = 0;
-	init.hscore = h_score(init.board);
+	init.hscore = 0;
 	init.fscore = init.depth-init.hscore;
 
 	return init;
 }
 
+void setnode(node no) {
+
+}
+
 void main() {
-	check_board(board);
-	print_board(board);
+
 
 	node a = initnode(board);
 	list open;
 	open.head = &a;
 
 	check_board(open.head->board);
-	print_board(open.head->board);
+	print_board(*open.head);
+
+	find_move(*open.head);
 }
