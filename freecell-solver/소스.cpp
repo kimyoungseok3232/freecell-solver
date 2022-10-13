@@ -162,7 +162,7 @@ int find_top(int board[10][20],int n) {
 }
 void find_move(node no) {
 	int top[8][2];
-
+	printf("\n");
 	for (int i = 0; i < 8; i++) {
 		int t = find_top(no.board, i + 2);
 		top[i][0] = t % 100;
@@ -170,10 +170,28 @@ void find_move(node no) {
 		print_card(top[i][0]);
 		printf("%d ", top[i][1]);
 	}
-
-	for (int i = 0; i < 8; i++) {
-
+	printf("\n\n");
+	if (no.empty_freecell != 0) {
+		printf("      to   freecell\n");
 	}
+	for (int i = 0; i < 8; i++) {
+		if (top[i][0] % 13 == no.board[1][(top[i][0] - 1) / 13] + 1) {
+			print_card(top[i][0]);
+			printf("to   homecell\n");
+		}
+		for (int j = 0; j < 8; j++) {
+			if (j == i)
+				continue;
+			else if (((top[i][0] > 26 && top[j][0]<27) || (top[i][0] < 27 && top[j][0] > 26))&&((top[i][0]+1)%13 == top[j][0] % 13)) {
+				print_card(top[i][0]);
+				printf("to   ");
+				print_card(top[j][0]);
+				printf("\n");
+			}
+		}
+	}
+
+
 }
 int h_score(int board[10][20]) {
 
