@@ -112,7 +112,7 @@ void print_card(int num) {
 void print_board(node no) {
 
 	int count = 52 - no.board[1][0] % 13 - no.board[1][1] % 13 - no.board[1][2] % 13 - no.board[1][3] % 13 + no.empty_freecell - 4;
-
+	printf("%d", no.empty_freecell);
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 4; j++) {
 			print_card(no.board[i][j]);
@@ -123,14 +123,15 @@ void print_board(node no) {
 	for (int j = 0; j < 20; j++) {
 		for (int i = 2; i < 10; i++) {
 
-			if (no.board[i][j] == NULL)
-				continue;
 			int num = no.board[i][j];
 
-			print_card(num);
-
-
-			count--;
+			if (no.board[i][j] == NULL)
+				printf("emp   ");
+			else
+			{
+				print_card(num);
+				count--;
+			}
 		}
 		printf("\n");
 		if (count == 0)
@@ -189,9 +190,15 @@ void find_move(node no) {
 				printf("\n");
 			}
 		}
+		for (int k = 0; k < 4-no.empty_freecell; k++) {
+			if ((no.board[0][k] > 26 && top[i][0] < 27) || (no.board[0][k] < 27 && top[i][0]>26) && ((no.board[0][k] + 1) % 13 == top[i][0] % 13)) {
+				print_card(no.board[0][k]);
+				printf("to   ");
+				print_card(top[i][0]);
+				printf("\n");
+			}
+		}
 	}
-
-
 }
 int h_score(int board[10][20]) {
 
@@ -201,7 +208,77 @@ int h_score(int board[10][20]) {
 
 	return score;
 }
+node setnode(int board[10][20]) {
 
+	node no;
+	int empty_f = 0;
+	int empty_c = 0;
+
+	if (board[0][0] == 0)
+		empty_f = 4;
+	else if (board[0][1] == 0)
+		empty_f = 3;
+	else if (board[0][2] == 0)
+		empty_f = 2;
+	else if (board[0][3] == 0)
+		empty_f = 1;
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 20; j++) {
+			if (i > 1 && board[i][0] == NULL)
+				empty_c++;
+			if (board[i][j] == NULL)
+				break;
+			no.board[i][j] = board[i][j];
+		}
+	}
+	no.empty_freecell = empty_f;
+	no.empty_cell = empty_c;
+	no.hscore = h_score(no.board);
+
+	return no;
+}
+node move(node no, int move) {
+
+	node nextno;
+
+	int from = move / 10000;
+	int to = move / 100 % 100;
+	int howmany = move % 100;
+
+
+	int nboard[10][20] = {NULL};
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 20; j++) {
+			nboard[i][j] = no.board[i][j];
+		}
+	}
+
+	printf("%d %d %d", from, to/10, howmany);
+	print_card(nboard[from / 10][from % 10]);
+	print_card(nboard[to / 10][to % 10]);
+
+	for (int i = 0; i < howmany; i++) {
+		nboard[to / 10][(to % 10) + howmany - i] = nboard[from / 10][(from % 10) - i];
+
+		if (from / 10 > 2)
+			nboard[from / 10][(from % 10) - i] = NULL;
+		else
+			nboard[from / 10][(from % 10) - i] = 0;
+
+	}
+
+
+	nextno = setnode(nboard);
+
+	nextno.prev = &no;
+	nextno.last_move = move;
+	nextno.depth = nextno.prev->depth + 1;
+	nextno.fscore = nextno.depth - nextno.hscore;
+
+	return nextno;
+}
 node initnode(int board[10][20]) {
 	node init;
 	
@@ -215,24 +292,24 @@ node initnode(int board[10][20]) {
 	init.empty_cell = 0;
 	init.depth = 0;
 	init.hscore = 0;
-	init.fscore = init.depth-init.hscore;
+	init.fscore = 0;
 
 	return init;
 }
 
-void setnode(node no) {
-
-}
-
-void main() {
+int main() {
 
 
 	node a = initnode(board);
-	list open;
 	open.head = &a;
 
 	check_board(open.head->board);
 	print_board(*open.head);
 
 	find_move(*open.head);
+	printf("\n");
+	node b = move(*open.head, 466501);
+	
+	check_board(b.board);
+	print_board(b);
 }
