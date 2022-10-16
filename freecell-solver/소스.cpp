@@ -50,8 +50,9 @@ struct node {
 	int last_move = 0;
 	node* prev = NULL;
 	node* listnext = NULL;
-	node* samefend = NULL;
 };
+
+node* samefend[200] = {NULL};
 
 struct list {
 	node* head = NULL;
@@ -208,6 +209,27 @@ int h_score(int board[10][20]) {
 
 	return score;
 }
+void putopenlist(node *no) {
+	node* sa;
+	if (open.head->fscore == no->fscore) {
+		if (open.head->hscore < no->hscore) {
+			no->listnext = open.head;
+			open.head = no;
+		}
+		else {
+			no->listnext = samefend[no->fscore]->listnext;
+			samefend[no->fscore]->listnext = no;
+			samefend[no->fscore] = no;
+		}
+	}
+	else if (open.head->fscore < no->fscore) {
+		no->listnext = samefend[open.head->fscore]->listnext;
+		samefend[open.head->fscore]->listnext = no;
+		if (samefend[no->fscore] == NULL) {
+			samefend[no->fscore] = no;
+		}
+	}
+}
 node setnode(int board[10][20]) {
 
 	node no;
@@ -302,6 +324,7 @@ int main() {
 
 	node a = initnode(board);
 	open.head = &a;
+	samefend[0] = &a;
 
 	check_board(open.head->board);
 	print_board(*open.head);
