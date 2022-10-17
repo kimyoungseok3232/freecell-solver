@@ -218,23 +218,24 @@ node move(node no, int move) {
 	int to_c = to % 10;
 
 	int nboard[10][20] = { NULL };
-	if (howmany == 1) {
-		for (int i = 0; i < 10; i++) {
-			for (int j = 0; j < 20; j++) {
-				if (to_r == i && to_c == j) {
-					nboard[i][j] = no.board[from_r][from_c];
-				}
-				else if(from_r == i && from_c == j) {
-					nboard[from_r][from_c] = no.board[to_r][to_c];
-				}
-				else {
-					nboard[i][j] = no.board[i][j];
-				}
-			}
+
+	for (int i = 0; i < 10; i++) {
+		for (int j = 0; j < 20; j++) {
+			nboard[i][j] = no.board[i][j];
 		}
 	}
-	printf("\n %d %d   %d %d\n", from / 10, from % 10, to / 10, to % 10);
 
+	for (int i = 0; i < howmany; i++) {
+		if (to_r < 2)
+			howmany--;
+		nboard[to / 10][(to % 10) + howmany - i] = nboard[from / 10][(from % 10) - i];
+
+		if (from / 10 > 2)
+			nboard[from / 10][(from % 10) - i] = NULL;
+		else
+			nboard[from / 10][(from % 10) - i] = 0;
+
+	}
 
 	
 	nextno = setnode(nboard);
