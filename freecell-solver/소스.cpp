@@ -172,8 +172,8 @@ int find_top(int board[10][20],int n) {
 void putopenlist(node* no) {
 	if (open.head->fscore == no->fscore) {
 		if (open.head->hscore < no->hscore) {
-			no->listnext = open.head;
-			open.head = no;
+			no->listnext = open.head->listnext;
+			open.head->listnext = no;
 		}
 		else {
 			no->listnext = samefend[no->fscore]->listnext;
@@ -297,6 +297,13 @@ void find_move(node no) {
 	printf("\n\n");
 	if (no.empty_freecell != 0) {
 		printf("      to   freecell\n");
+		for (int i = 0; i < 8; i++) {
+			int mo = (i + 2) * 100000 + top[i][2] * 10000 + 0 + (4-no.empty_freecell)*100 + 1;
+			printf("\n %d \n", mo);
+			node* next = new node;
+			*next = move(no, mo);
+			putopenlist(next);
+		}
 	}
 	for (int i = 0; i < 8; i++) {
 		if (top[i][0] % 13 == no.board[1][(top[i][0] - 1) / 13] + 1) {
@@ -354,11 +361,41 @@ int main() {
 	find_move(*open.head);
 	printf("\n");
 	//node *b = open.head->listnext;
-	
+	if (samefend[open.head->fscore] == open.head) {
+		if(open.head->fscore == open.head->listnext->fscore)
+			samefend[open.head->fscore] = open.head->listnext;
+	}
+
+	open.head = open.head->listnext;
 	//check_board(b->board);
+	print_board(*open.head);
+
+	find_move(*open.head);
+
+	if (samefend[open.head->fscore] == open.head) {
+		if (open.head->fscore == open.head->listnext->fscore)
+			samefend[open.head->fscore] = open.head->listnext;
+	}
+
+	open.head = open.head->listnext;
+
+	print_board(*open.head);
+
+	find_move(*open.head);
+
+	print_board(*open.head);
+
+	find_move(*open.head);
+
+	if (samefend[open.head->fscore] == open.head) {
+		if (open.head->fscore == open.head->listnext->fscore)
+			samefend[open.head->fscore] = open.head->listnext;
+	}
+
+	open.head = open.head->listnext;
+
+	print_board(*open.head);
+
 	print_board(*open.head->listnext);
 
-	find_move(*open.head->listnext);
-
-	print_board(*open.head->listnext);
 }
