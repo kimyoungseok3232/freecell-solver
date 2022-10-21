@@ -31,9 +31,9 @@ int board[10][20] = {
 	{0,0,0,0},
 	//stack
 	{h(6),s(7),c(8),c(7),c(1),h(7),d(11)},
-	{d(2),c(12),h(4),d(8),s(12),s(10),s(5)},
+	{d(2),c(12),s(2),d(8),s(12),s(10),s(5)},
 	{d(9),h(8),d(3),s(6),d(4),s(4),c(11)},
-	{h(11),c(2),h(13),h(9),s(2),c(3),h(3)},
+	{h(11),c(2),h(13),h(9),h(4),c(3),h(3)},
 	{h(10),s(3),d(1),d(6),c(5),d(12)},
 	{s(1),s(9),c(10),c(6),c(13),h(1)},
 	{s(11),h(12),d(5),c(4),d(13),d(10)},
@@ -317,13 +317,17 @@ void find_move(node no) {
 	}
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-			if (j == i)
-				continue;
-			else if (((top[i][0] > 26 && top[j][0]<27) || (top[i][0] < 27 && top[j][0] > 26))&&((top[i][0]+1)%13 == top[j][0] % 13)) {
-				print_card(top[i][0]);
-				printf("to   ");
-				print_card(top[j][0]);
-				printf("\n");
+			for (int k = 0; k < top[i][1]; k++) {
+				int fc = no.board[i+2][top[i][2]-k];
+				int tc = top[j][0];
+				if (j == i)
+					continue;
+				else if (((fc > 26 && tc < 27) || (fc < 27 && tc > 26)) && ((fc + 1) % 13 == tc % 13)) {
+					print_card(fc);
+					printf("to   ");
+					print_card(top[j][0]);
+					printf("\n");
+				}
 			}
 		}
 		for (int k = 0; k < 4-no.empty_freecell; k++) {
@@ -393,14 +397,21 @@ int main() {
 		if (open.head->fscore == open.head->listnext->fscore)
 			samefend[open.head->fscore] = open.head->listnext;
 	}
-	printf("%d\n", open.head->hscore);
 
 	open.head = open.head->listnext;
 
-	printf("%d\n", open.head->hscore);
-
 	print_board(*open.head);
 
+	find_move(*open.head);
+
+	if (samefend[open.head->fscore] == open.head) {
+		if (open.head->fscore == open.head->listnext->fscore)
+			samefend[open.head->fscore] = open.head->listnext;
+	}
+
+	open.head = open.head->listnext;
+
+	print_board(*open.head);
 	//print_board(*open.head->listnext->listnext->listnext->listnext->listnext->listnext->listnext->listnext);
 
 
