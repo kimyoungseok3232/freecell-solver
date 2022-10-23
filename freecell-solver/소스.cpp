@@ -323,6 +323,7 @@ void find_move(node no) {
 				if (j == i)
 					continue;
 				else if (((fc > 26 && tc < 27) || (fc < 27 && tc > 26)) && ((fc + 1) % 13 == tc % 13)) {
+					int mo = (i + 2) * 100000 + top[i][2] * 10000 + (j + 2) * 1000 + top[j][2] * 100 + k;
 					print_card(fc);
 					printf("to   ");
 					print_card(top[j][0]);
