@@ -155,6 +155,7 @@ int find_top(int board[10][20],int n) {
 			if (temp == 0) {
 				temp = board[n][j];
 				count++;
+				height = j;
 			}
 			else if (temp < 27 && board[n][j]>26 && (temp + 1) % 13 == board[n][j] % 13) {
 				count++;
@@ -162,10 +163,10 @@ int find_top(int board[10][20],int n) {
 			else if (temp > 26 && board[n][j]<27 && (temp + 1) % 13 == board[n][j] % 13) {
 				count++;
 			}
-			else
+			else {
 				break;
+			}
 		}
-		height = j;
 	}
 	return height*10000+count*100+temp;
 }
@@ -317,13 +318,17 @@ void find_move(node no) {
 	}
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
+			if (j == i)
+				continue;
 			for (int k = 0; k < top[i][1]; k++) {
-				int fc = no.board[i+2][top[i][2]-k];
+				int fc = no.board[i + 2][top[i][2] - k];
 				int tc = top[j][0];
-				if (j == i)
-					continue;
-				else if (((fc > 26 && tc < 27) || (fc < 27 && tc > 26)) && ((fc + 1) % 13 == tc % 13)) {
-					int mo = (i + 2) * 100000 + top[i][2] * 10000 + (j + 2) * 1000 + top[j][2] * 100 + k;
+				if (((fc > 26 && tc < 27) || (fc < 27 && tc > 26)) && ((fc + 1) % 13 == tc % 13)) {
+					int mo = (i + 2) * 100000 + top[i][2] * 10000 + (j + 2) * 1000 + top[j][2] * 100 + k+1;
+					printf("\n %d \n", mo);
+					node* next = new node;
+					*next = move(no, mo);
+					putopenlist(next);
 					print_card(fc);
 					printf("to   ");
 					print_card(top[j][0]);
@@ -415,6 +420,7 @@ int main() {
 	print_board(*open.head);
 	//print_board(*open.head->listnext->listnext->listnext->listnext->listnext->listnext->listnext->listnext);
 
+	print_board(*open.head->listnext->listnext);
 
 
 
