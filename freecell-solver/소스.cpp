@@ -61,7 +61,7 @@ int h_score(int board[10][20]) {
 
 	int score = 0;
 
-	score = board[1][0] + board[1][1]%13 + board[1][2]%13 + board[1][3]%13;
+	score = board[1][0] + (board[1][1] - 1) % 13 + 1 + (board[1][2] - 1) % 13 + 1 + (board[1][3] - 1) % 13 + 1;
 
 	return score;
 }
@@ -363,7 +363,12 @@ node initnode(int board[10][20]) {
 
 	return init;
 }
-
+bool finish(node* no) {
+	if (no->hscore == 52)
+		return true;
+	else
+		return false;
+}
 int main() {
 
 
