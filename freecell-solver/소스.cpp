@@ -364,10 +364,15 @@ node initnode(int board[10][20]) {
 	return init;
 }
 bool finish(node* no) {
-	if (no->hscore == 52)
-		return true;
-	else
-		return false;
+	bool finish = false;
+
+	for (int i = 0; i < 4; i++){
+		if ((no->board[1][i] - 1) % 13 != 12)
+			break;
+		if (i == 3)
+			finish = true;
+	}
+	return finish;
 }
 int main() {
 
@@ -375,7 +380,10 @@ int main() {
 	node a = initnode(board);
 	open.head = &a;
 	samefend[0] = &a;
-
+	if (finish(open.head))
+		printf("finished\n");
+	else
+		printf("not finished\n");
 	check_board(open.head->board);
 	print_board(*open.head);
 
