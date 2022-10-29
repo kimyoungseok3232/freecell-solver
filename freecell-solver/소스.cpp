@@ -57,6 +57,9 @@ node* samefend[200] = {NULL};
 struct list {
 	node* head = NULL;
 }open;
+int max_movable_card(node* no) {
+	return (no->empty_freecell + 1) * (no->empty_cell + 1);
+}
 int h_score(int board[10][20]) {
 
 	int score = 0;
@@ -320,7 +323,7 @@ void find_move(node no) {
 		for (int j = 0; j < 8; j++) {
 			if (j == i)
 				continue;
-			for (int k = 0; k < top[i][1]; k++) {
+			for (int k = 0; k < top[i][1] && k <= max_movable_card(&no); k++) {
 				int fc = no.board[i + 2][top[i][2] - k];
 				int tc = top[j][0];
 				if (((fc > 26 && tc < 27) || (fc < 27 && tc > 26)) && ((fc + 1) % 13 == tc % 13)) {
