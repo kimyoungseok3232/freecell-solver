@@ -341,6 +341,10 @@ void find_move(node no) {
 		}
 		for (int k = 0; k < 4-no.empty_freecell; k++) {
 			if ((no.board[0][k] > 26 && top[i][0] < 27) || (no.board[0][k] < 27 && top[i][0]>26) && ((no.board[0][k] + 1) % 13 == top[i][0] % 13)) {
+				int mo = 0 * 100000 + k * 10000 + (i + 2) * 1000 + top[i][2] * 100 + 1;
+				node* next = new node;
+				*next = move(no, mo);
+				putopenlist(next);
 				print_card(no.board[0][k]);
 				printf("to   ");
 				print_card(top[i][0]);
